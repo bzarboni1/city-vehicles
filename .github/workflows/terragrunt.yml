@@ -9,7 +9,7 @@ on:
 env:
   tf_version: 1.13.1
   tg_version: 0.86.2
-  working_dir: .
+  working_dir: ./scripts/iac
 
 jobs:
   terragrunt:
