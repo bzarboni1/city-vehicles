@@ -1,0 +1,55 @@
+# Azure Infrastructure Setup PRD
+
+## Project Overview
+Set up the complete Azure infrastructure for the Ottawa City Vehicles Detection POC, ensuring all services stay within free-tier limits while following Azure Well-Architected Framework principles.
+
+## Requirements
+
+### Functional Requirements
+- Deploy Azure Functions for camera polling and image processing
+- Configure Azure Blob Storage for image storage with secure access
+- Set up Azure Computer Vision API for vehicle detection and OCR
+- Implement Azure Key Vault for secure secrets management
+- Configure Azure Application Insights for monitoring and logging
+- Establish proper networking and security configurations
+
+### Non-Functional Requirements
+- Stay within Azure free-tier limits for all services
+- Implement security best practices with managed identities
+- Ensure 99.9% availability for the Functions runtime
+- Minimize cold start times for Azure Functions
+- Implement proper error handling and retry mechanisms
+- Follow Azure naming conventions and resource organization
+
+### Technical Requirements
+- Use Azure Resource Manager (ARM) templates or Bicep for Infrastructure as Code
+- Configure RBAC with least privilege access
+- Implement proper tagging strategy for resource management
+- Set up diagnostic settings for all resources
+- Configure backup and disaster recovery where applicable
+
+## Success Criteria
+- All Azure resources deployed successfully in a single resource group
+- Functions can authenticate to other Azure services using managed identity
+- Blob Storage accessible with proper access controls
+- Computer Vision API responding within free-tier limits
+- All secrets stored securely in Key Vault
+- Monitoring and alerting configured for all critical components
+- Infrastructure deployable through automated scripts
+
+## Acceptance Criteria
+- Resource group created with proper naming convention
+- Azure Functions app deployed with Python 3.11 runtime
+- Storage account created with blob containers and proper access policies
+- Computer Vision resource provisioned in appropriate region
+- Key Vault configured with access policies for Functions
+- Application Insights workspace linked to Functions
+- Network security groups configured if needed
+- All resources tagged consistently for cost tracking
+
+## Out of Scope
+- Multi-region deployment (single region for POC)
+- Advanced networking features like VNets (using default networking)
+- Premium tiers or paid features
+- Custom domains or SSL certificates
+- Integration with on-premises systems

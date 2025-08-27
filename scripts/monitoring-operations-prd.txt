@@ -1,0 +1,185 @@
+# Monitoring and Operations PRD
+
+## Project Overview
+Implement comprehensive monitoring, logging, and operational management for the Ottawa City Vehicles Detection system using Azure Monitor, Application Insights, and operational best practices to ensure system reliability and performance within free-tier limits.
+
+## Requirements
+
+### Functional Requirements
+- Monitor Azure Functions performance and execution metrics
+- Track API usage against free-tier limits for all Azure services
+- Implement alerting for system failures and threshold breaches
+- Provide operational dashboards for system health monitoring
+- Log all application activities with appropriate detail levels
+- Monitor storage usage and costs across all Azure resources
+- Track image processing accuracy and success rates
+- Implement automated health checks for all components
+
+### Non-Functional Requirements
+- Stay within Application Insights free-tier limits (5 GB/month)
+- Provide near real-time monitoring with minimal latency
+- Ensure monitoring system doesn't impact application performance
+- Implement cost-effective alerting using free notification channels
+- Maintain monitoring data for at least 30 days
+- Achieve 99.9% monitoring system uptime
+
+### Technical Requirements
+- Use Azure Application Insights for application performance monitoring
+- Implement Azure Monitor for infrastructure monitoring
+- Configure Log Analytics workspace for centralized logging
+- Set up Azure Monitor alerts with email notifications
+- Implement custom telemetry for business metrics
+- Use structured logging compatible with Azure Monitor
+- Configure diagnostic settings for all Azure resources
+
+## Monitoring Components
+
+### Application Performance Monitoring
+- Function execution times and success rates
+- Memory usage and CPU utilization during execution
+- Cold start frequency and duration
+- Request/response times for external API calls
+- Dependency failure rates and error patterns
+- Custom business metrics (vehicles detected, accuracy rates)
+
+### Infrastructure Monitoring
+- Storage account usage and transaction counts
+- Computer Vision API call volume and rate limiting
+- Key Vault access patterns and secret retrieval times
+- Network latency and connectivity issues
+- Resource health status across all services
+
+### Cost and Usage Monitoring
+- Track usage against free-tier limits for all services
+- Monitor storage consumption trends
+- Alert when approaching service limits
+- Generate monthly cost optimization reports
+- Track API call patterns for optimization opportunities
+
+## Success Criteria
+- All critical system failures detected within 5 minutes
+- Proactive alerts prevent service limit overages
+- Performance issues identified before impacting operations
+- Comprehensive operational visibility into system health
+- Cost optimization opportunities identified monthly
+- Zero blind spots in system monitoring coverage
+
+## Acceptance Criteria
+- Application Insights configured with custom telemetry
+- Azure Monitor alerts set up for all critical thresholds
+- Operational dashboard provides real-time system status
+- Log aggregation working across all components
+- Alerting notifications delivered reliably via email
+- Performance baselines established for all metrics
+- Monthly operational reports generated automatically
+- Troubleshooting runbooks created and tested
+
+## Alerting Strategy
+
+### Critical Alerts (Immediate Response)
+- Function execution failures (> 3 consecutive failures)
+- API rate limit exceeded warnings (approaching 80% of limits)
+- Storage account reaching capacity limits
+- Computer Vision API service unavailable
+- Authentication failures with Azure services
+
+### Warning Alerts (Monitor and Plan)
+- Function execution time increasing (> 20 seconds average)
+- Image processing accuracy declining (< 80% success rate)
+- Storage cost trending above projections
+- Unusual traffic patterns detected
+- Performance degradation trends
+
+### Information Alerts (Daily Summary)
+- Daily processing summary statistics
+- API usage summary against limits
+- Storage utilization trends
+- System performance summary
+
+## Logging Strategy
+
+### Log Levels and Categories
+- **Error**: System failures, API errors, processing failures
+- **Warning**: Performance issues, approaching limits, retries
+- **Information**: Successful operations, configuration changes
+- **Debug**: Detailed execution traces (disabled in production)
+
+### Structured Logging Format
+```json
+{
+  "timestamp": "2025-08-21T14:30:00Z",
+  "level": "Info",
+  "category": "ImageProcessing",
+  "message": "Vehicle detection completed",
+  "properties": {
+    "image_id": "camera-346/2025/08/21/14-30-00.jpg",
+    "vehicles_detected": 2,
+    "processing_time_ms": 2300,
+    "api_calls_used": 2,
+    "function_execution_id": "12345"
+  }
+}
+```
+
+## Dashboard Requirements
+
+### Operations Dashboard
+- Real-time system health status
+- Current API usage vs. limits
+- Recent processing activity timeline
+- Error rate trends and patterns
+- Performance metrics overview
+
+### Business Metrics Dashboard
+- Daily vehicle detection counts
+- Vehicle type classification breakdown
+- Processing accuracy trends
+- City vehicle identification rates
+- Monthly operational summary
+
+## Operational Procedures
+
+### Daily Operations
+- Review overnight processing results
+- Check system health dashboard
+- Verify API usage within limits
+- Address any warning alerts
+- Update operational status
+
+### Weekly Operations
+- Analyze performance trends
+- Review cost optimization opportunities
+- Update monitoring thresholds if needed
+- Test alerting mechanisms
+- Review and update documentation
+
+### Monthly Operations
+- Generate comprehensive operational report
+- Review and optimize monitoring configuration
+- Assess system performance against SLAs
+- Plan capacity adjustments if needed
+- Update disaster recovery procedures
+
+## Troubleshooting and Diagnostics
+
+### Common Issues Runbooks
+- Function execution timeout resolution
+- API rate limit handling procedures
+- Storage capacity management
+- Authentication failure resolution
+- Performance degradation investigation
+
+### Diagnostic Tools
+- Application Insights Live Metrics Stream
+- Log Analytics queries for troubleshooting
+- Azure Resource Health monitoring
+- Custom diagnostic functions
+- Performance profiling tools
+
+## Out of Scope
+- Advanced AI/ML-based anomaly detection
+- Integration with third-party monitoring tools
+- Custom metrics collection beyond Azure Monitor
+- Real-time streaming analytics
+- Advanced security monitoring (SIEM)
+- Multi-region monitoring coordination
