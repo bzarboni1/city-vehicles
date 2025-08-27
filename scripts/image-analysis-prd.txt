@@ -1,0 +1,121 @@
+# Image Analysis Service PRD
+
+## Project Overview
+Develop an Azure Functions-based image analysis service that processes traffic camera images to detect city vehicles, extract vehicle ID numbers, and classify vehicle types using Azure Computer Vision API while staying within free-tier limits.
+
+## Requirements
+
+### Functional Requirements
+- Trigger on new blob uploads to the camera images container
+- Analyze images using Azure Computer Vision API for object detection
+- Detect vehicles in traffic camera images
+- Extract text/numbers from detected vehicles using OCR
+- Classify vehicle types (city bus, snow plow, maintenance truck, bylaw vehicle)
+- Store analysis results in structured format (JSON)
+- Generate confidence scores for all detections and classifications
+- Handle multiple vehicles in a single image
+- Filter results to focus on city-owned vehicles only
+
+### Non-Functional Requirements
+- Process images within 30 seconds of upload
+- Stay within Computer Vision API free-tier limits (5,000 calls/month)
+- Optimize API calls to minimize usage while maintaining accuracy
+- Handle API rate limiting gracefully
+- Memory-efficient image processing
+- Reliable error handling and recovery
+
+### Technical Requirements
+- Use Azure Functions with Blob Trigger
+- Integrate Azure Computer Vision API v3.2
+- Implement custom machine learning models if needed for vehicle classification
+- Use structured logging for analysis results
+- Store results in Azure Table Storage or Cosmos DB (free tier)
+- Implement caching to avoid duplicate analysis
+- Use managed identity for service authentication
+
+## Vehicle Detection Requirements
+- Detect vehicles using Computer Vision object detection
+- Filter detections with confidence score > 70%
+- Focus on vehicle bounding boxes for further analysis
+- Identify vehicle characteristics (size, color, shape)
+- Distinguish between city vehicles and civilian vehicles
+
+## Vehicle Classification Requirements
+- Classify detected vehicles into categories:
+  - City Bus (OC Transpo)
+  - Snow Plow
+  - Maintenance Truck
+  - Bylaw Enforcement Vehicle
+  - Fire Truck
+  - Police Vehicle
+  - Garbage/Recycling Truck
+  - Other City Vehicle
+  - Non-City Vehicle
+- Use visual characteristics and text detection for classification
+- Implement confidence scoring for classifications
+
+## Text Extraction Requirements
+- Use OCR to extract text from vehicle surfaces
+- Focus on license plates, vehicle ID numbers, and department markings
+- Extract fleet numbers from city vehicles
+- Detect city logos and department identifiers
+- Handle various text orientations and lighting conditions
+
+## Success Criteria
+- Accurately detect city vehicles with >85% precision
+- Successfully extract vehicle ID numbers when visible
+- Classify vehicle types with >80% accuracy
+- Process images within free-tier API limits
+- Zero data loss during processing
+- Comprehensive analysis results stored for review
+
+## Acceptance Criteria
+- Blob trigger activates within 10 seconds of image upload
+- Computer Vision API calls optimized for accuracy vs. cost
+- Vehicle detection results include bounding boxes and confidence scores
+- OCR results include extracted text and confidence levels
+- Classification results stored with probability scores
+- Failed analyses logged with error details and retry logic
+- Results accessible through query interface
+- Analysis metadata includes processing time and API usage
+
+## Output Data Structure
+```json
+{
+  "image_id": "camera-346/2025/08/21/14-30-00.jpg",
+  "timestamp": "2025-08-21T14:30:00Z",
+  "analysis_results": {
+    "vehicles_detected": [
+      {
+        "bounding_box": {"x": 100, "y": 150, "width": 200, "height": 150},
+        "confidence": 0.92,
+        "vehicle_type": "city_bus",
+        "classification_confidence": 0.87,
+        "extracted_text": ["OC Transpo", "4021"],
+        "vehicle_id": "4021",
+        "is_city_vehicle": true
+      }
+    ],
+    "total_vehicles": 1,
+    "city_vehicles": 1,
+    "processing_time_ms": 2300,
+    "api_calls_used": 2
+  }
+}
+```
+
+## Error Handling Requirements
+- API rate limit handling with exponential backoff
+- Image format validation before processing
+- Computer Vision API timeout handling
+- Storage failure recovery for results
+- Duplicate processing prevention
+- Graceful degradation when APIs are unavailable
+
+## Out of Scope
+- Real-time video analysis
+- Advanced machine learning model training
+- Integration with city vehicle databases
+- Historical trend analysis
+- Multi-camera correlation
+- Live alerting systems

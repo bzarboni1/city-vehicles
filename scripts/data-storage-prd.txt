@@ -1,0 +1,146 @@
+# Data Storage and Management PRD
+
+## Project Overview
+Design and implement a comprehensive data storage strategy for the Ottawa City Vehicles Detection system, ensuring efficient storage, retrieval, and management of images, analysis results, and system metadata while optimizing for Azure free-tier usage.
+
+## Requirements
+
+### Functional Requirements
+- Store traffic camera images with organized folder structure
+- Maintain analysis results in queryable format
+- Implement data lifecycle management and archival policies
+- Provide secure access to stored data with proper permissions
+- Enable efficient data retrieval for reporting and analysis
+- Store system logs and performance metrics
+- Implement backup and recovery procedures
+- Support data export capabilities for compliance
+
+### Non-Functional Requirements
+- Stay within Azure free-tier storage limits (5 GB total)
+- Optimize storage costs through intelligent tiering
+- Ensure data durability and availability (99.9%)
+- Implement fast data access patterns for frequently accessed data
+- Minimize storage operations to stay within free-tier transaction limits
+- Ensure GDPR compliance for any personal data
+
+### Technical Requirements
+- Use Azure Blob Storage for image storage with hot/cool tier optimization
+- Implement Azure Table Storage or Cosmos DB free tier for structured data
+- Configure proper security and access controls
+- Set up automated data lifecycle policies
+- Implement data compression where appropriate
+- Use managed identities for secure service-to-service access
+
+## Storage Architecture
+
+### Blob Storage Structure
+```
+images/
+├── camera-346/
+│   ├── 2025/
+│   │   ├── 08/
+│   │   │   ├── 21/
+│   │   │   │   ├── 14-30-00.jpg
+│   │   │   │   └── metadata.json
+│   │   │   └── daily-summary.json
+│   │   └── monthly-summary.json
+│   └── config/
+│       └── camera-settings.json
+└── processed/
+    ├── thumbnails/
+    ├── analysis-overlays/
+    └── failed-processing/
+```
+
+### Table Storage Schema
+- **ImageMetadata**: Store image properties and processing status
+- **AnalysisResults**: Store vehicle detection and classification results
+- **SystemLogs**: Store application logs and error information
+- **PerformanceMetrics**: Store processing times and resource usage
+
+## Data Lifecycle Management
+- **Active Data (0-7 days)**: Hot tier blob storage, immediate access
+- **Recent Data (7-30 days)**: Cool tier blob storage, occasional access
+- **Archive Data (30+ days)**: Archive tier or deletion based on retention policy
+- **Analysis Results**: Retain indefinitely in Table Storage (within limits)
+- **System Logs**: Retain for 90 days for debugging and compliance
+
+## Success Criteria
+- All data stored within free-tier limits
+- Sub-second access times for recent data
+- Zero data loss during normal operations
+- Automated lifecycle management working correctly
+- Secure access controls properly configured
+- Backup and recovery procedures tested and documented
+
+## Acceptance Criteria
+- Blob Storage configured with appropriate access tiers
+- Table Storage schema implemented with proper indexing
+- Data lifecycle policies automated and tested
+- Security policies restrict access to authorized services only
+- Storage usage monitoring and alerting configured
+- Data export functionality available for compliance
+- Retention policies enforced automatically
+- Performance metrics meet defined SLAs
+
+## Security Requirements
+- All data encrypted at rest using Azure Storage encryption
+- Access controlled through managed identities and RBAC
+- No public access to sensitive data containers
+- Audit logging enabled for all data access operations
+- Secure data deletion when retention period expires
+- Network security rules configured if needed
+
+## Backup and Recovery
+- Leverage Azure Storage built-in redundancy (LRS for free tier)
+- Implement application-level backup for critical analysis results
+- Document recovery procedures for various failure scenarios
+- Test recovery procedures monthly
+- Maintain recovery time objective (RTO) of 1 hour
+- Maintain recovery point objective (RPO) of 15 minutes
+
+## Monitoring and Alerting
+- Monitor storage usage against free-tier limits
+- Alert when approaching storage capacity limits
+- Track storage operation counts to avoid overage charges
+- Monitor data access patterns for optimization opportunities
+- Generate monthly storage utilization reports
+
+## Data Schema Definitions
+
+### ImageMetadata Table
+```json
+{
+  "PartitionKey": "camera-346",
+  "RowKey": "2025-08-21T14:30:00Z",
+  "ImageUrl": "https://storage.../camera-346/2025/08/21/14-30-00.jpg",
+  "FileSizeBytes": 245760,
+  "ProcessingStatus": "completed",
+  "AnalysisResultsUrl": "https://storage.../results/...",
+  "CreatedAt": "2025-08-21T14:30:00Z",
+  "ProcessedAt": "2025-08-21T14:30:15Z"
+}
+```
+
+### AnalysisResults Table
+```json
+{
+  "PartitionKey": "analysis-results",
+  "RowKey": "camera-346-2025-08-21T14:30:00Z",
+  "ImageId": "camera-346/2025/08/21/14-30-00.jpg",
+  "VehiclesDetected": 2,
+  "CityVehiclesFound": 1,
+  "VehicleDetails": "[{vehicle_data}]",
+  "ProcessingTimeMs": 2300,
+  "ConfidenceScore": 0.87,
+  "ApiCallsUsed": 2
+}
+```
+
+## Out of Scope
+- Real-time data streaming
+- Advanced analytics and machine learning on stored data
+- Integration with external data sources
+- Custom encryption beyond Azure Storage default
+- Multi-region data replication
+- Data warehouse capabilities

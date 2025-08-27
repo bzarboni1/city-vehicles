@@ -1,0 +1,73 @@
+# Camera Polling Service PRD
+
+## Project Overview
+Develop a robust Azure Functions-based service to poll Ottawa traffic camera #346, respecting API rate limits, and securely storing images for analysis. The service must handle errors gracefully and provide comprehensive logging.
+
+## Requirements
+
+### Functional Requirements
+- Poll Ottawa traffic camera API every 60 seconds (respecting 1 request/minute limit)
+- Download camera images and upload to Azure Blob Storage
+- Implement proper error handling for network timeouts and API failures
+- Log all activities with appropriate detail levels
+- Support configurable camera numbers through environment variables
+- Handle certificate-based authentication when required
+- Implement retry logic with exponential backoff for failed requests
+- Store metadata about each image (timestamp, camera ID, file size)
+
+### Non-Functional Requirements
+- Function execution time under 30 seconds to avoid timeouts
+- Memory usage optimization for image processing
+- Respect API rate limits with built-in throttling
+- Handle temporary storage limitations during image downloads
+- Implement proper logging levels (Info, Warning, Error)
+- Ensure functions can scale without hitting API limits
+
+### Technical Requirements
+- Use Azure Functions with Timer Trigger (CRON: "0 */1 * * * *")
+- Implement using Python 3.11 with azure-functions SDK
+- Use requests library with proper timeout handling
+- Integrate with Azure Blob Storage SDK for uploads
+- Load configuration from environment variables and Azure App Settings
+- Implement structured logging compatible with Application Insights
+- Use managed identity for Azure service authentication
+
+## Success Criteria
+- Camera images successfully downloaded every minute
+- Images uploaded to Blob Storage with proper naming convention
+- Zero data loss during normal operations
+- Comprehensive error logging for debugging
+- Function cold start time under 10 seconds
+- Memory usage stays within consumption plan limits
+
+## Acceptance Criteria
+- Timer trigger executes precisely every 60 seconds
+- HTTP requests include proper timeouts and error handling
+- Images saved to Blob Storage with timestamp-based naming
+- Failed requests logged with appropriate error details
+- Function respects camera API rate limits
+- Environment variables properly loaded and validated
+- Retry mechanism implemented for transient failures
+- Performance metrics logged to Application Insights
+
+## Image Storage Requirements
+- Images stored in Blob Storage hot tier
+- Naming convention: "camera-{id}/YYYY/MM/DD/HH-mm-ss.jpg"
+- Metadata stored as blob properties (camera_id, timestamp, source_url)
+- Automatic cleanup of images older than 30 days
+- Blob access tier optimization for cost management
+
+## Error Handling Requirements
+- Network timeout handling (10-second timeout)
+- HTTP error status code handling (4xx, 5xx)
+- Blob Storage upload failure handling
+- Configuration validation on function startup
+- Graceful degradation when services are unavailable
+- Dead letter queue for persistent failures
+
+## Out of Scope
+- Real-time image processing (handled by separate service)
+- Image format conversion or compression
+- Direct integration with Computer Vision API
+- Multi-camera support in single function
+- Image archival to cold storage
