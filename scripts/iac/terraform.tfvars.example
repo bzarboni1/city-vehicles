@@ -1,0 +1,10 @@
+# Terragrunt will automatically read the values from this file and make them
+# available to your Terraform code.
+
+# Required variables
+subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"
+
+# Optional variables with default values
+# location        = "eastus"
+# project_name    = "city-vehicles"
+# environment     = "dev"
