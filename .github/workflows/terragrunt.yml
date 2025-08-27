@@ -71,7 +71,7 @@ jobs:
       id: clean
       if: steps.changes.outputs.plan_size > 0
       run: |
-          TG_OUT=$(echo "${{ steps.condense.outputs.tg_action_output }}" | sed 's|%0A|\n|g')
+          TG_OUT=$(echo "${{ steps.plan.outputs.tg_action_output }}" | sed 's|%0A|\n|g')
           echo "condensed_plan<<EOF" >> $GITHUB_OUTPUT
           echo "$TG_OUT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
