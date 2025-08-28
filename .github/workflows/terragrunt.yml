@@ -109,4 +109,11 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
+      - name: Terragrunt Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && steps.changes.outputs.plan_size > 0
+        uses: gruntwork-io/terragrunt-action@v2
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
           tg_command: 'run-all apply --terragrunt-no-color --terragrunt-non-interactive'
