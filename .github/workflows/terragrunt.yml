@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - "scripts/iac/**"
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
