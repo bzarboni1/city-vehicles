@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'scripts/iac/**'
+  workflow_dispatch:
 env:
   tf_version: 1.13.1
   tg_version: 0.86.2
@@ -43,7 +44,7 @@ jobs:
         tf_version: ${{ env.tf_version }}
         tg_version: ${{ env.tg_version }}
         tg_dir: ${{ env.working_dir }}
-        tg_command: 'hclfmt --terragrunt-check --terragrunt-diff'
+        tg_command: 'hcl format --check'
 
     - name: Terragrunt Plan
       id: plan
