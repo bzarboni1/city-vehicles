@@ -5,8 +5,9 @@ on:
     branches:
       - main
     paths:
-      - 'scripts/iac/**'
+      - "scripts/iac/**"
   workflow_dispatch:
+
 env:
   tf_version: 1.13.1
   tg_version: 0.86.2
@@ -21,44 +22,44 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-    
+
     defaults:
       run:
         working-directory: ./scripts/iac
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-    - name: Check Terraform Format
-      id: fmt
-      run: terraform fmt -check
+      - name: Check Terraform Format
+        id: fmt
+        run: terraform fmt -check
 
-    - name: Check Terragrunt HCL
-      id: grunt-fmt
-      uses: gruntwork-io/terragrunt-action@v2
-      with:
-        tf_version: ${{ env.tf_version }}
-        tg_version: ${{ env.tg_version }}
-        tg_dir: ${{ env.working_dir }}
-        tg_command: 'hcl format --check'
+      - name: Check Terragrunt HCL
+        id: grunt-fmt
+        uses: gruntwork-io/terragrunt-action@v2
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
+          tg_command: "hcl format --check"
 
-    - name: Terragrunt Plan
-      id: plan
-      uses: gruntwork-io/terragrunt-action@v2
-      continue-on-error: true
-      with:
-        tf_version: ${{ env.tf_version }}
-        tg_version: ${{ env.tg_version }}
-        tg_dir: ${{ env.working_dir }}
-        tg_command: 'run-all plan -out tfplan'
+      - name: Terragrunt Plan
+        id: plan
+        uses: gruntwork-io/terragrunt-action@v2
+        continue-on-error: true
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
+          tg_command: "plan --all -out tfplan"
 
-    - name: Check whether there are any changes
-      id: changes
-      run: |
+      - name: Check whether there are any changes
+        id: changes
+        run: |
           tfplan=$(cat<<EOF
           ${{ steps.plan.outputs.tg_action_output }}
           EOF
@@ -68,21 +69,21 @@ jobs:
             echo "plan_size=$(echo "${tfplan}" | wc -l) " >> $GITHUB_OUTPUT
           fi
 
-    - name: Terragrunt Plan Cleaning
-      id: clean
-      if: steps.changes.outputs.plan_size > 0
-      run: |
+      - name: Terragrunt Plan Cleaning
+        id: clean
+        if: steps.changes.outputs.plan_size > 0
+        run: |
           TG_OUT=$(echo "${{ steps.plan.outputs.tg_action_output }}" | sed 's|%0A|\n|g')
           echo "condensed_plan<<EOF" >> $GITHUB_OUTPUT
           echo "$TG_OUT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-    - name: Update Pull Request
-      uses: actions/github-script@v7
-      if: github.event_name == 'pull_request' && steps.changes.outputs.plan_size > 0
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
+      - name: Update Pull Request
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request' && steps.changes.outputs.plan_size > 0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
             const output = `#### Terraform Format and Style 🖌️\`${{ steps.fmt.outcome }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
